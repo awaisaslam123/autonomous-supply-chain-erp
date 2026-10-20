@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. Enterprise Transactional Database (PostgreSQL)
+  erp-db:
+    image: postgres:15-alpine
+    container_name: erp-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: inventory_erp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # Automatically initializes schema and seeds initial data on startup
+      - ./data/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d inventory_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Analytics & Autonomous Replenishment Dashboard (Streamlit + Python)
+  inventory-app:
+    build: .
+    container_name: erp-inventory-dashboard
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      DB_HOST: erp-db
+      DB_PORT: 5432
+      DB_NAME: inventory_erp
+      DB_USER: postgres
+      DB_PASS: postgres
+    depends_on:
+      erp-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
