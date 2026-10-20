@@ -1,11 +1,11 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-"""
-TexFlow ERP — Enterprise Textile Supply Chain & Autonomous Replenishment System.
-Engineered with Modern Enterprise UX Design (20+ Years Design Standard).
-Built with Streamlit & Plotly.
-"""
+# """
+# TexFlow ERP — Enterprise Textile Supply Chain & Autonomous Replenishment System.
+# Engineered with Modern Enterprise UX Design (20+ Years Design Standard).
+# Built with Streamlit & Plotly.
+# """
 
 import streamlit as st
 import pandas as pd
